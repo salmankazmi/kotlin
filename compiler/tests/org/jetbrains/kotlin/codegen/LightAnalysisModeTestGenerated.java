@@ -6654,23 +6654,6 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
         @TestDataPath("$PROJECT_ROOT")
         @RunWith(JUnit3RunnerWithInners.class)
         public static class MultiModule extends AbstractLightAnalysisModeTest {
-            @TestMetadata("inlineMultiModuleOverride.kt")
-            public void ignoreInlineMultiModuleOverride() throws Exception {
-                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/coroutines/multiModule/inlineMultiModuleOverride.kt");
-                if (KotlinTestUtils.RUN_IGNORED_TESTS_AS_REGULAR) {
-                    doTest(fileName);
-                    return;
-                }
-                try {
-                    doTest(fileName);
-                }
-                catch (Throwable ignore) {
-                    ignore.printStackTrace();
-                    return;
-                }
-                throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive or add it to whitelist for that.");
-            }
-
             public void testAllFilesPresentInMultiModule() throws Exception {
                 KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/coroutines/multiModule"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
             }
@@ -6684,6 +6667,12 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             @TestMetadata("inlineMultiModule.kt")
             public void testInlineMultiModule() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/coroutines/multiModule/inlineMultiModule.kt");
+                doTest(fileName);
+            }
+
+            @TestMetadata("inlineMultiModuleOverride.kt")
+            public void testInlineMultiModuleOverride() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/coroutines/multiModule/inlineMultiModuleOverride.kt");
                 doTest(fileName);
             }
 

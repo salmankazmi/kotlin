@@ -6673,18 +6673,7 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             @TestMetadata("inlineMultiModuleOverride.kt")
             public void testInlineMultiModuleOverride() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/coroutines/multiModule/inlineMultiModuleOverride.kt");
-                if (KotlinTestUtils.RUN_IGNORED_TESTS_AS_REGULAR) {
-                    doTest(fileName);
-                    return;
-                }
-                try {
-                    doTest(fileName);
-                }
-                catch (Throwable ignore) {
-                    ignore.printStackTrace();
-                    return;
-                }
-                throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive or add it to whitelist for that.");
+                doTest(fileName);
             }
 
             @TestMetadata("inlineMultiModuleWithController.kt")
