@@ -60,7 +60,7 @@ class StorageComponentContainer(private val id: String, parent: StorageComponent
         componentStorage.dump(printer)
     }
 
-    override fun close() = componentStorage.dispose()
+    override fun close(): Unit = componentStorage.dispose()
 
     fun resolve(request: Type, context: ValueResolveContext): ValueDescriptor? {
         return componentStorage.resolve(request, context) ?: resolveIterable(request, context)
