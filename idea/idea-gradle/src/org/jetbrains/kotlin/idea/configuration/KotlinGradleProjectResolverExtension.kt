@@ -39,9 +39,9 @@ import org.jetbrains.plugins.gradle.service.project.AbstractProjectResolverExten
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolver
 import java.util.*
 
-var DataNode<ModuleData>.isResolved: Boolean
+var DataNode<ModuleData>.isResolved
         by NotNullableCopyableDataNodeUserDataProperty(Key.create<Boolean>("IS_RESOLVED"), false)
-var DataNode<ModuleData>.hasKotlinPlugin: Boolean
+var DataNode<ModuleData>.hasKotlinPlugin
         by NotNullableCopyableDataNodeUserDataProperty(Key.create<Boolean>("HAS_KOTLIN_PLUGIN"), false)
 var DataNode<ModuleData>.compilerArgumentsBySourceSet: CompilerArgumentsBySourceSet?
         by CopyableDataNodeUserDataProperty(Key.create<CompilerArgumentsBySourceSet>("CURRENT_COMPILER_ARGUMENTS"))
@@ -49,7 +49,7 @@ var DataNode<ModuleData>.coroutines: String?
         by CopyableDataNodeUserDataProperty(Key.create<String>("KOTLIN_COROUTINES"))
 var DataNode<ModuleData>.platformPluginId: String?
         by CopyableDataNodeUserDataProperty(Key.create<String>("PLATFORM_PLUGIN_ID"))
-var DataNode<out ModuleData>.implementedModuleNames: List<String>
+var DataNode<out ModuleData>.implementedModuleNames
         by NotNullableCopyableDataNodeUserDataProperty(Key.create<List<String>>("IMPLEMENTED_MODULE_NAME"), emptyList())
 
 class KotlinGradleProjectResolverExtension : AbstractProjectResolverExtension() {

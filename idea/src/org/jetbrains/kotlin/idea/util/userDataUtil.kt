@@ -27,7 +27,7 @@ class CopyableDataNodeUserDataProperty<in R : DataNode<*>, T : Any>(val key: Key
 }
 
 class NotNullableCopyableDataNodeUserDataProperty<in R : DataNode<*>, T : Any>(val key: Key<T>, val defaultValue: T) {
-    operator fun getValue(thisRef: R, property: KProperty<*>): T? = thisRef.getCopyableUserData(key) ?: defaultValue
+    operator fun getValue(thisRef: R, property: KProperty<*>): T = thisRef.getCopyableUserData(key) ?: defaultValue
 
     operator fun setValue(thisRef: R, property: KProperty<*>, value: T) {
         thisRef.putCopyableUserData(key, if (value != defaultValue) value else null)
