@@ -6,7 +6,7 @@
   <version>@snapshot@</version>
   <vendor url="http://www.jetbrains.com">JetBrains</vendor>
 
-  <idea-version since-build="173.1" until-build="173.*"/>
+  <idea-version since-build="181.1" until-build="181.*"/>
 
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.remoteServers</depends>
@@ -24,6 +24,8 @@
   <depends optional="true" config-file="i18n.xml">com.intellij.java-i18n</depends>
   <depends optional="true" config-file="injection.xml">org.intellij.intelliLang</depends>
   <depends optional="true" config-file="decompiler.xml">org.jetbrains.java.decompiler</depends>
+
+  <!-- DEPENDS-ON-AS-PLACEHOLDER -->
 
   <!-- ULTIMATE-PLUGIN-PLACEHOLDER -->
 
@@ -970,6 +972,11 @@
 
     <intentionAction>
       <className>org.jetbrains.kotlin.idea.intentions.InsertExplicitTypeArgumentsIntention</className>
+      <category>Kotlin</category>
+    </intentionAction>
+
+    <intentionAction>
+      <className>org.jetbrains.kotlin.idea.intentions.MoveLambdaOutsideParenthesesIntention</className>
       <category>Kotlin</category>
     </intentionAction>
 
@@ -2766,15 +2773,6 @@
                      groupName="Style issues"
                      enabledByDefault="true"
                      level="INFO"
-                     language="kotlin"
-    />
-
-    <localInspection implementationClass="org.jetbrains.kotlin.idea.inspections.MoveLambdaOutsideParenthesesInspection"
-                     displayName="Lambda argument inside parentheses"
-                     groupPath="Kotlin"
-                     groupName="Style issues"
-                     enabledByDefault="true"
-                     level="WEAK WARNING"
                      language="kotlin"
     />
 
