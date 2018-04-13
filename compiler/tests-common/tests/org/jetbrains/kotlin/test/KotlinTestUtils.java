@@ -87,17 +87,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.jetbrains.kotlin.test.InTextDirectivesUtils.isCompatibleTarget;
-import static org.jetbrains.kotlin.test.InTextDirectivesUtils.isDirectiveDefined;
+import static org.jetbrains.kotlin.test.InTextDirectivesUtils.*;
 
 public class KotlinTestUtils {
     public static String TEST_MODULE_NAME = "test-module";
 
     public static final String TEST_GENERATOR_NAME = "org.jetbrains.kotlin.generators.tests.TestsPackage";
-    public static final String PLEASE_REGENERATE_TESTS = "Please regenerate tests (GenerateTests.kt)";
+    private static final String PLEASE_REGENERATE_TESTS = "Please regenerate tests (GenerateTests.kt)";
 
-    public static final boolean RUN_IGNORED_TESTS_AS_REGULAR =
+    private static final boolean RUN_IGNORED_TESTS_AS_REGULAR =
             Boolean.getBoolean("org.jetbrains.kotlin.run.ignored.tests.as.regular");
+
+    private static final boolean AUTOMATICALLY_UNMUTE_PASSED_TESTS = true;
+    private static final boolean AUTOMATICALLY_MUTE_FAILED_TESTS = false;
 
     private static final List<File> filesToDelete = new ArrayList<>();
 
@@ -1009,6 +1011,49 @@ public class KotlinTestUtils {
 
     public static String navigationMetadata(@TestDataFile String testFile) {
         return testFile;
+    }
+
+    public interface DoTest {
+        void invoke(String filePath) throws Exception;
+    }
+
+    public static void runTest(DoTest test, TargetBackend targetBackend, @TestDataFile String testDataFile) throws Exception {
+        runTest0(test, targetBackend, testDataFile);
+    }
+
+    public static void runTest0(DoTest test, TargetBackend targetBackend, String testDataFilePath) throws Exception {
+        File testDataFile = new File(testDataFilePath);
+
+        boolean isIgnored = isIgnoredTarget(targetBackend, testDataFile);
+
+        try {
+            test.invoke(testDataFilePath);
+        }
+        catch (Throwable e) {
+
+            if (!isIgnored && AUTOMATICALLY_MUTE_FAILED_TESTS) {
+                String text = doLoadFile(testDataFile);
+                String newText = InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name() + "\n" + text;
+                FileUtil.writeToFile(testDataFile, newText);
+            }
+
+            if (RUN_IGNORED_TESTS_AS_REGULAR || !isIgnored) {
+                throw e;
+            }
+
+            e.printStackTrace();
+            return;
+        }
+
+        if (isIgnored) {
+            if (AUTOMATICALLY_UNMUTE_PASSED_TESTS) {
+                String text = doLoadFile(testDataFile);
+                String newText = text.replace(InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name() + "\n", "");
+                FileUtil.writeToFile(testDataFile, newText);
+            }
+
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive.");
+        }
     }
 
     public static String getTestsRoot(@NotNull Class<?> testCaseClass) {
