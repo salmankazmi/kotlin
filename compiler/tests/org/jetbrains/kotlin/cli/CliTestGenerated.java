@@ -159,6 +159,12 @@ public class CliTestGenerated extends AbstractCliTest {
             doJvmTest(fileName);
         }
 
+        @TestMetadata("dumpDeclarationsWithAbstractSuspendFunction.args")
+        public void testDumpDeclarationsWithAbstractSuspendFunction() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/cli/jvm/dumpDeclarationsWithAbstractSuspendFunction.args");
+            doJvmTest(fileName);
+        }
+
         @TestMetadata("duplicateSources.args")
         public void testDuplicateSources() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/cli/jvm/duplicateSources.args");

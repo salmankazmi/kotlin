@@ -1,0 +1,5 @@
+$TESTDATA_DIR$/dumpDeclarationsWithAbstractSuspendFunction.kt
+-d
+$TEMP_DIR$
+-Xcoroutines=enable
+-Xdump-declarations-to=$TEMP_DIR$/temp.json
