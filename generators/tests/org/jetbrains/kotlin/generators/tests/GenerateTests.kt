@@ -995,10 +995,10 @@ fun main(args: Array<String>) {
         }
 
         testClass<AbstractIncrementalMultiplatformJvmCompilerRunnerTest> {
-            model("incremental/multiplatform", extension = null, excludeParentDirs = true)
+            model("incremental/multiplatform/singleModule", extension = null, excludeParentDirs = true)
         }
         testClass<AbstractIncrementalMultiplatformJsCompilerRunnerTest> {
-            model("incremental/multiplatform", extension = null, excludeParentDirs = true)
+            model("incremental/multiplatform/singleModule", extension = null, excludeParentDirs = true)
         }
     }
 
