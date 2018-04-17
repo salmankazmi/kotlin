@@ -9,7 +9,7 @@
   <idea-version since-build="182.1" until-build="183.*"/>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.remoteServers</depends>
+  <depends>com.intellij.modules.idea</depends>
 
   <!-- required for Kotlin/Native plugin -->
   <depends optional="true">org.jetbrains.kotlin.native.platform.deps</depends>
