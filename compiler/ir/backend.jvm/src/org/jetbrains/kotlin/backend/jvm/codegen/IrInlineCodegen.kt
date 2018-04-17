@@ -65,7 +65,8 @@ class IrInlineCodegen(
         parameterIndex: Int,
         codegen: ExpressionCodegen
     ) {
-        putArgumentOrCapturedToLocalVal(JvmKotlinType(value.type, value.kotlinType), value, -1, parameterIndex, ValueKind.CAPTURED)
+        if (processDefaultMaskOrMethodHandler(value, kind)) return
+        putArgumentOrCapturedToLocalVal(JvmKotlinType(value.type, value.kotlinType), value, -1, parameterIndex, kind)
     }
 
     private fun putCapturedValueOnStack(argumentExpression: IrExpression, valueType: Type, capturedParamindex: Int) {
