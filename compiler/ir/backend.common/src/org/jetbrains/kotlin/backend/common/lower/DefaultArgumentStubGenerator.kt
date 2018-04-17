@@ -55,7 +55,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.builtIns
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.builtIns
 
-open class DefaultArgumentStubGenerator constructor(val context: CommonBackendContext, private val skipInline: Boolean = false): DeclarationContainerLoweringPass {
+open class DefaultArgumentStubGenerator constructor(val context: CommonBackendContext, private val skipInline: Boolean = true): DeclarationContainerLoweringPass {
     override fun lower(irDeclarationContainer: IrDeclarationContainer) {
         irDeclarationContainer.declarations.transformFlat { memberDeclaration ->
             if (memberDeclaration is IrFunction)
@@ -225,7 +225,7 @@ private fun nullConst(expression: IrElement, type: KotlinType): IrExpression? {
     }
 }
 
-class DefaultParameterInjector constructor(val context: CommonBackendContext, private val skipInline: Boolean = false): BodyLoweringPass {
+class DefaultParameterInjector constructor(val context: CommonBackendContext, private val skipInline: Boolean = true): BodyLoweringPass {
     override fun lower(irBody: IrBody) {
 
         irBody.transformChildrenVoid(object : IrElementTransformerVoid() {
@@ -345,7 +345,7 @@ class DefaultParameterInjector constructor(val context: CommonBackendContext, pr
 }
 
 private fun CallableMemberDescriptor.needsDefaultArgumentsLowering(skipInline: Boolean) =
-    valueParameters.any { it.hasDefaultValue() } && !(this is FunctionDescriptor && !skipInline && isInline)
+    valueParameters.any { it.hasDefaultValue() } && (this !is FunctionDescriptor || !isInline || !skipInline)
 
 private fun FunctionDescriptor.generateDefaultsFunction(context: CommonBackendContext): IrFunction {
     return context.ir.defaultParameterDeclarationsCache.getOrPut(this) {
