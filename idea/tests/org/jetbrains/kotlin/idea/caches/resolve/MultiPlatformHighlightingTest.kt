@@ -24,10 +24,11 @@ import org.jetbrains.kotlin.idea.stubs.createFacet
 import org.jetbrains.kotlin.idea.test.PluginTestCaseBase
 import org.jetbrains.kotlin.test.TestJdkKind
 
+// TODO: delete this file
+
 // Some tests are ignored below. They fail because <error> markers are not stripped correctly in multi-module highlighting tests.
 // TODO: fix this in the test framework and unignore the tests
 class MultiPlatformHighlightingTest : AbstractMultiModuleHighlightingTest() {
-    override fun getTestDataPath() = "${PluginTestCaseBase.getTestDataPathBase()}/multiModuleHighlighting/multiplatform/"
 
     fun testBasic() {
         doMultiPlatformTest(TargetPlatformKind.Jvm[JvmTarget.JVM_1_6])
@@ -107,16 +108,16 @@ class MultiPlatformHighlightingTest : AbstractMultiModuleHighlightingTest() {
     }
 
     fun testTransitive() {
-        val commonModule = module("common", TestJdkKind.MOCK_JDK)
+        val commonModule = module("base_common", TestJdkKind.MOCK_JDK)
         commonModule.createFacet(TargetPlatformKind.Common, false)
         val jvmPlatform = TargetPlatformKind.Jvm[JvmTarget.JVM_1_6]
 
-        val baseModule = module("jvm_base", TestJdkKind.MOCK_JDK)
-        baseModule.createFacet(jvmPlatform, implementedModuleName = "common")
+        val baseModule = module("base_jvm", TestJdkKind.MOCK_JDK)
+        baseModule.createFacet(jvmPlatform, implementedModuleName = "base_common")
         baseModule.enableMultiPlatform()
         baseModule.addDependency(commonModule)
 
-        val userModule = module("jvm_user", TestJdkKind.MOCK_JDK)
+        val userModule = module("user_jvm_dep(base_jvm)", TestJdkKind.MOCK_JDK)
         userModule.createFacet(jvmPlatform)
         userModule.enableMultiPlatform()
         userModule.addDependency(commonModule)
@@ -126,16 +127,16 @@ class MultiPlatformHighlightingTest : AbstractMultiModuleHighlightingTest() {
     }
 
     fun testTriangle() {
-        val commonModule = module("common_base", TestJdkKind.MOCK_JDK)
+        val commonModule = module("base_common", TestJdkKind.MOCK_JDK)
         commonModule.createFacet(TargetPlatformKind.Common, false)
 
-        val derivedModule = module("common_derived", TestJdkKind.MOCK_JDK)
+        val derivedModule = module("derived_common_dep(base-common)", TestJdkKind.MOCK_JDK)
         derivedModule.createFacet(TargetPlatformKind.Common)
         derivedModule.enableMultiPlatform()
 
         val jvmPlatform = TargetPlatformKind.Jvm[JvmTarget.JVM_1_6]
-        val jvmModule = module("jvm_derived", TestJdkKind.MOCK_JDK)
-        jvmModule.createFacet(jvmPlatform, implementedModuleName = "common_derived")
+        val jvmModule = module("derived_jvm", TestJdkKind.MOCK_JDK)
+        jvmModule.createFacet(jvmPlatform, implementedModuleName = "derived_common_dep(base-common)")
         jvmModule.enableMultiPlatform()
         jvmModule.addDependency(commonModule)
         jvmModule.addDependency(derivedModule)

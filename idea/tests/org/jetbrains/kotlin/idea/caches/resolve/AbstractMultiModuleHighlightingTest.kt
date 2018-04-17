@@ -20,9 +20,12 @@ import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.codegen.forTestCompile.ForTestCompileRuntime
 import org.jetbrains.kotlin.config.TargetPlatformKind
 import org.jetbrains.kotlin.idea.framework.CommonLibraryKind
+import org.jetbrains.kotlin.idea.multiplatform.setupMppProjectFromDirStructure
 import org.jetbrains.kotlin.idea.stubs.AbstractMultiHighlightingTest
 import org.jetbrains.kotlin.idea.stubs.createFacet
+import org.jetbrains.kotlin.idea.test.PluginTestCaseBase
 import org.jetbrains.kotlin.test.TestJdkKind
+import java.io.File
 
 abstract class AbstractMultiModuleHighlightingTest : AbstractMultiHighlightingTest() {
 
@@ -34,6 +37,12 @@ abstract class AbstractMultiModuleHighlightingTest : AbstractMultiHighlightingTe
         }
     }
 
+    protected open fun doTest(path: String) {
+        setupMppProjectFromDirStructure(File(path))
+        checkHighlightingInAllFiles()
+    }
+
+    // TODO: remove this code
     protected fun doMultiPlatformTest(
         vararg platforms: TargetPlatformKind<*>,
         withStdlibCommon: Boolean = false,
@@ -59,7 +68,7 @@ abstract class AbstractMultiModuleHighlightingTest : AbstractMultiHighlightingTe
             platformModule.addDependency(commonModule)
             configureModule(platformModule, platform)
         }
-
-        checkHighlightingInAllFiles()
     }
+
+    override fun getTestDataPath() = "${PluginTestCaseBase.getTestDataPathBase()}/multiModuleHighlighting/multiplatform/"
 }

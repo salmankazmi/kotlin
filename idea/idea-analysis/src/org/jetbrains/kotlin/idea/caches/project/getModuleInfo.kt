@@ -88,7 +88,7 @@ fun collectAllModuleInfosFromIdeaModel(project: Project, platform: TargetPlatfor
         )
     }
 
-    return mergePlatformModules(modulesSourcesInfos, platform) + librariesInfos + sdksInfos
+    return modulesSourcesInfos + librariesInfos + sdksInfos
 }
 
 private fun mergePlatformModules(
