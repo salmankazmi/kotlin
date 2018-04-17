@@ -126,7 +126,6 @@ private fun testLightClass(expected: File, testData: File, normalize: (String) -
     LightClassTestCommon.testLightClass(
         expected,
         testData,
-        coroutinesPackage = "",
         findLightClass = findLightClass,
         normalizeText = { text ->
                 //NOTE: ide and compiler differ in names generated for parameters with unspecified names
