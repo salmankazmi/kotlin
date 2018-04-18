@@ -80,7 +80,7 @@ class TestGroup(private val testsRoot: String, val testDataRoot: String, val tes
     }
 }
 
-fun testGroup(testsRoot: String, testDataRoot: String, testRunnerMethodName: String = "runTest", init: TestGroup.() -> Unit) {
+fun testGroup(testsRoot: String, testDataRoot: String, testRunnerMethodName: String = RunTestMethodModel.METHOD_NAME, init: TestGroup.() -> Unit) {
     TestGroup(testsRoot, testDataRoot, testRunnerMethodName).init()
 }
 

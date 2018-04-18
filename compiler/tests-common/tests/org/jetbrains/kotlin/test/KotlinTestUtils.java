@@ -1017,10 +1017,20 @@ public class KotlinTestUtils {
         void invoke(String filePath) throws Exception;
     }
 
+    // In this test runner version the `testDataFile` parameter is annotated by `TestDataFile`.
+    // So only file paths passed to this parameter will be used in navigation actions, like "Navigate to testdata" and "Related Symbol..."
     public static void runTest(DoTest test, TargetBackend targetBackend, @TestDataFile String testDataFile) throws Exception {
         runTest0(test, targetBackend, testDataFile);
     }
 
+    // In this test runner version, NONE of the parameters are annotated by `TestDataFile`.
+    // So DevKit will use test name to determine related files in navigation actions, like "Navigate to testdata" and "Related Symbol..."
+    //
+    // Pro:
+    // * in most cases, it shows all related files including generated js files, for example.
+    // Cons:
+    // * sometimes, for too common/general names, it shows many variants to navigate
+    // * it adds an additional step for navigation -- you must choose an exact file to navigate
     public static void runTest0(DoTest test, TargetBackend targetBackend, String testDataFilePath) throws Exception {
         File testDataFile = new File(testDataFilePath);
 
@@ -1033,8 +1043,13 @@ public class KotlinTestUtils {
 
             if (!isIgnored && AUTOMATICALLY_MUTE_FAILED_TESTS) {
                 String text = doLoadFile(testDataFile);
-                String newText = InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name() + "\n" + text;
-                FileUtil.writeToFile(testDataFile, newText);
+                String directive = InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name();
+                String newText = directive + "\n" + text;
+
+                if (!newText.equals(text)) {
+                    System.err.println("\"" + directive + "\" was added to \"" + testDataFile + "\"");
+                    FileUtil.writeToFile(testDataFile, newText);
+                }
             }
 
             if (RUN_IGNORED_TESTS_AS_REGULAR || !isIgnored) {
@@ -1048,8 +1063,13 @@ public class KotlinTestUtils {
         if (isIgnored) {
             if (AUTOMATICALLY_UNMUTE_PASSED_TESTS) {
                 String text = doLoadFile(testDataFile);
-                String newText = text.replace(InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name() + "\n", "");
-                FileUtil.writeToFile(testDataFile, newText);
+                String directive = InTextDirectivesUtils.IGNORE_BACKEND_DIRECTIVE_PREFIX + targetBackend.name();
+                String newText = Pattern.compile("^" + directive + "\n", Pattern.MULTILINE).matcher(text).replaceAll("");
+
+                if (!newText.equals(text)) {
+                    System.err.println("\"" + directive + "\" was removed from \"" + testDataFile + "\"");
+                    FileUtil.writeToFile(testDataFile, newText);
+                }
             }
 
             throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive.");
