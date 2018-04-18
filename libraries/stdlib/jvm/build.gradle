@@ -51,7 +51,9 @@ configurations {
 }
 
 dependencies {
-    expectedBy project(":kotlin-stdlib-common")
+    // With this line commented out there's no dependency from :core:metadata to :kotlin-stdlib-common
+    // If you uncomment it, the dependency will appear
+    //expectedBy project(":kotlin-stdlib-common")
 
     commonSources project(path: ":kotlin-stdlib-common", configuration: "sources")
 
