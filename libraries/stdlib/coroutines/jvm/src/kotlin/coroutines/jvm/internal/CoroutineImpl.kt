@@ -3,6 +3,8 @@
  * that can be found in the license/LICENSE.txt file.
  */
 
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+@file:JvmVersion
 package kotlin.coroutines.jvm.internal
 
 import java.lang.IllegalStateException
@@ -16,9 +18,9 @@ import kotlin.jvm.internal.Lambda
  */
 @SinceKotlin("1.3")
 abstract class CoroutineImpl(
-    arity: Int,
-    @JvmField
-    protected var completion: Continuation<Any?>?
+        arity: Int,
+        @JvmField
+        protected var completion: Continuation<Any?>?
 ) : Lambda(arity), Continuation<Any?> {
 
     // label == -1 when coroutine cannot be started (it is just a factory object) or has already finished execution
@@ -33,11 +35,10 @@ abstract class CoroutineImpl(
 
     private var _facade: Continuation<Any?>? = null
 
-    val facade: Continuation<Any?>
-        get() {
-            if (_facade == null) _facade = interceptContinuationIfNeeded(_context!!, this)
-            return _facade!!
-        }
+    val facade: Continuation<Any?> get() {
+        if (_facade == null) _facade = interceptContinuationIfNeeded(_context!!, this)
+        return _facade!!
+    }
 
     override fun resume(value: Any?) {
         processBareContinuationResume(completion!!) {

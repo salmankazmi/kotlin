@@ -2,23 +2,26 @@
  * Copyright 2010-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
  * that can be found in the license/LICENSE.txt file.
  */
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+@file:kotlin.jvm.JvmVersion
 package kotlin.coroutines
 
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
+import kotlin.*
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 
 @PublishedApi
 @SinceKotlin("1.3")
-internal class SafeContinuation<in T>
-internal constructor(
-    private val delegate: Continuation<T>,
-    initialResult: Any?
+internal actual class SafeContinuation<in T>
+internal actual constructor(
+        private val delegate: Continuation<T>,
+        initialResult: Any?
 ) : Continuation<T> {
 
     @PublishedApi
-    internal constructor(delegate: Continuation<T>) : this(delegate, UNDECIDED)
+    internal actual constructor(delegate: Continuation<T>) : this(delegate, UNDECIDED)
 
-    public override val context: CoroutineContext
+    public actual override val context: CoroutineContext
         get() = delegate.context
 
     @Volatile
@@ -31,13 +34,12 @@ internal constructor(
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
         private val RESULT = AtomicReferenceFieldUpdater.newUpdater<SafeContinuation<*>, Any?>(
-            SafeContinuation::class.java, Any::class.java as Class<Any?>, "result"
-        )
+                SafeContinuation::class.java, Any::class.java as Class<Any?>, "result")
     }
 
     private class Fail(val exception: Throwable)
 
-    override fun resume(value: T) {
+    actual override fun resume(value: T) {
         while (true) { // lock-free loop
             val result = this.result // atomic read
             when {
@@ -51,10 +53,10 @@ internal constructor(
         }
     }
 
-    override fun resumeWithException(exception: Throwable) {
+    actual override fun resumeWithException(exception: Throwable) {
         while (true) { // lock-free loop
             val result = this.result // atomic read
-            when {
+            when  {
                 result === UNDECIDED -> if (RESULT.compareAndSet(this, UNDECIDED, Fail(exception))) return
                 result === COROUTINE_SUSPENDED -> if (RESULT.compareAndSet(this, COROUTINE_SUSPENDED, RESUMED)) {
                     delegate.resumeWithException(exception)
@@ -66,7 +68,7 @@ internal constructor(
     }
 
     @PublishedApi
-    internal fun getResult(): Any? {
+    internal actual fun getResult(): Any? {
         var result = this.result // atomic read
         if (result === UNDECIDED) {
             if (RESULT.compareAndSet(this, UNDECIDED, COROUTINE_SUSPENDED)) return COROUTINE_SUSPENDED

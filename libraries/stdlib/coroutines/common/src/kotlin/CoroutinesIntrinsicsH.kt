@@ -5,7 +5,7 @@
 
 package kotlin.coroutines.intrinsics
 
-import kotlin.coroutines.*
+import kotlin.coroutines.Continuation
 
 /**
  * Starts unintercepted coroutine without receiver and with result type [T] and executes it until its first suspension.
@@ -15,10 +15,9 @@ import kotlin.coroutines.*
  * coroutine using a reference to the suspending function.
  */
 @SinceKotlin("1.3")
-@Suppress("UNCHECKED_CAST")
-public inline fun <T> (suspend () -> T).startCoroutineUninterceptedOrReturn(
-    completion: Continuation<T>
-): Any? = (this as Function1<Continuation<T>, Any?>).invoke(completion)
+public expect inline fun <T> (suspend () -> T).startCoroutineUninterceptedOrReturn(
+        completion: Continuation<T>
+): Any?
 
 /**
  * Starts unintercepted coroutine with receiver type [R] and result type [T] and executes it until its first suspension.
@@ -28,8 +27,18 @@ public inline fun <T> (suspend () -> T).startCoroutineUninterceptedOrReturn(
  * coroutine using a reference to the suspending function.
  */
 @SinceKotlin("1.3")
-@Suppress("UNCHECKED_CAST")
-public inline fun <R, T> (suspend R.() -> T).startCoroutineUninterceptedOrReturn(
-    receiver: R,
-    completion: Continuation<T>
-): Any? = (this as Function2<R, Continuation<T>, Any?>).invoke(receiver, completion)
+public expect inline fun <R, T> (suspend R.() -> T).startCoroutineUninterceptedOrReturn(
+        receiver: R,
+        completion: Continuation<T>
+): Any?
+
+@SinceKotlin("1.3")
+public expect fun <T> (suspend () -> T).createCoroutineUnchecked(
+        completion: Continuation<T>
+): Continuation<Unit>
+
+@SinceKotlin("1.3")
+public expect fun <R, T> (suspend R.() -> T).createCoroutineUnchecked(
+        receiver: R,
+        completion: Continuation<T>
+): Continuation<Unit>

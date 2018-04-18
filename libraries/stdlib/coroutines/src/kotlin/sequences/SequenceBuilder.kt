@@ -5,9 +5,10 @@
 
 @file:kotlin.jvm.JvmMultifileClass
 @file:kotlin.jvm.JvmName("SequenceBuilderKt")
+package kotlin.sequences
 
-package kotlin.coroutines
-
+import kotlin.*
+import kotlin.coroutines.*
 import kotlin.coroutines.intrinsics.*
 
 /**
@@ -85,7 +86,6 @@ public abstract class SequenceBuilder<in T> internal constructor() {
 
 @SinceKotlin("1.3")
 private typealias State = Int
-
 @SinceKotlin("1.3")
 private const val State_NotReady: State = 0
 @SinceKotlin("1.3")
@@ -109,8 +109,7 @@ private class SequenceBuilderIterator<T> : SequenceBuilder<T>(), Iterator<T>, Co
     override fun hasNext(): Boolean {
         while (true) {
             when (state) {
-                State_NotReady -> {
-                }
+                State_NotReady -> {}
                 State_ManyNotReady ->
                     if (nextIterator!!.hasNext()) {
                         state = State_ManyReady
@@ -139,7 +138,7 @@ private class SequenceBuilderIterator<T> : SequenceBuilder<T>(), Iterator<T>, Co
             }
             State_Ready -> {
                 state = State_NotReady
-                @Suppress("UNCHECKED_CAST")
+                @Suppress("UNCHECKED_CAST") 
                 val result = nextValue as T
                 nextValue = null
                 return result
